@@ -1,0 +1,36 @@
+plugins {
+    id "java"
+    id "application"
+    id "com.github.johnrengelman.shadow" version "5.2.0"
+}
+
+sourceCompatibility = 1.8
+
+group = "de.mat2095"
+version = "0.1.0"
+
+mainClassName = "de.mat2095.my_slither.Main"
+
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://repo.spring.io/plugins-release/"
+    }
+}
+
+dependencies {
+    runtimeOnly "com.bulenkov:darcula:2018.2"
+    implementation "org.java-websocket:Java-WebSocket:1.4.0"
+    runtimeOnly "org.slf4j:slf4j-simple:1.7.28"
+}
+
+
+run {
+    maxHeapSize = "2g"
+}
+
+shadowJar {
+    zip64 = true
+    mergeServiceFiles()
+}
