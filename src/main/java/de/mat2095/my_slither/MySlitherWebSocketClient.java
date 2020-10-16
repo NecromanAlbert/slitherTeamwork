@@ -2,6 +2,7 @@ package de.mat2095.my_slither;
 
 import static de.mat2095.my_slither.MySlitherModel.PI2;
 
+import java.awt.image.ColorModel;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
