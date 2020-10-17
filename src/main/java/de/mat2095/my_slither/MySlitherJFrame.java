@@ -38,6 +38,7 @@ final class MySlitherJFrame extends JFrame {
     private final Timer updateTimer;
     private Status status;
     private String colorContainer;
+    private Color colorContainerColor;
     private URI[] serverList;
     private MySlitherWebSocketClient client;
     private final Player player;
@@ -219,6 +220,7 @@ final class MySlitherJFrame extends JFrame {
             @Override
             public void run() {
                 synchronized (modelLock) {
+
                     colorContainer = snake.getSelectedItem().toString();
                     changeSnakeColor(canvas.getSnakeBodyColor());
                     //System.out.println("colour changed to " + colorContainer);
@@ -388,9 +390,15 @@ final class MySlitherJFrame extends JFrame {
         }
     }
 
-    private void changeSnakeColor(Color a) {
-        a = getColourFromString(colorContainer);
+    public void changeSnakeColor(Color a) {
+        colorContainerColor = getColourFromString(colorContainer);
+        a = colorContainerColor;
         //System.out.println("color is changed to " + a.toString());
+    }
+
+    public Color getColorContainer()
+    {
+        return colorContainerColor;
     }
 
     private Color getColourFromString(String col) {

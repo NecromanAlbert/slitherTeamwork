@@ -31,7 +31,7 @@ final class MySlitherCanvas extends JPanel {
     private static final Color[] OWN_SNAKE_HALO_COLORS = new Color[]{new Color(0x6039AFFF, true), new Color(0x0039AFFF, true)};
     private static final Color SNAKE_BODY_COLOR = new Color(0x6A8759);
     //private static final Color OWN_SNAKE_BODY_COLOR = new Color(0xA5C261);
-    private Color OWN_SNAKE_BODY_COLOR;
+    private static Color OWN_SNAKE_BODY_COLOR;
     private static final Color MAP_COLOR = new Color(0xA0A9B7C6, true);
     private static final Color MAP_POSITION_COLOR = new Color(0xE09E2927, true);
     private static final Color NAME_SHADOW_COLOR = new Color(0xC02B2B2B, true);
@@ -127,9 +127,16 @@ final class MySlitherCanvas extends JPanel {
     }
 
     public Color getSnakeBodyColor() {
-        if (OWN_SNAKE_BODY_COLOR != null)
-            System.out.println(OWN_SNAKE_BODY_COLOR.toString());
+
+        try {
+            OWN_SNAKE_BODY_COLOR = view.getColorContainer();
+        } catch (NullPointerException e) {
+            OWN_SNAKE_BODY_COLOR = view.getColorContainer();
+            System.out.println("Error caught!");
+        }
         return OWN_SNAKE_BODY_COLOR;
+
+
     }
 
     @Override
@@ -204,7 +211,11 @@ final class MySlitherCanvas extends JPanel {
             model.snakes.values().forEach(snake -> {
                 double thickness = 16 + snake.body.size() / 4.0;
                 if (snake.body.size() >= 2) {
-                    g.setColor(snake == model.snake ? OWN_SNAKE_BODY_COLOR : SNAKE_BODY_COLOR);
+                    if (snake == model.snake)
+                        g.setColor(OWN_SNAKE_BODY_COLOR);
+                    else
+                        g.setColor(SNAKE_BODY_COLOR);
+                    //g.setColor(snake == model.snake ? OWN_SNAKE_BODY_COLOR : SNAKE_BODY_COLOR);
                     g.setStroke(new BasicStroke((float) thickness, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 
                     double totalLength = 0; // TODO: respect FAM, ???
