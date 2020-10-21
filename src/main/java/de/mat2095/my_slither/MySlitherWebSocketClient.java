@@ -12,6 +12,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -23,6 +24,8 @@ import org.java_websocket.handshake.ServerHandshake;
 
 
 final class MySlitherWebSocketClient extends WebSocketClient {
+
+    // private static final Logger LOGGER =
 
     private static final Map<String, String> HEADER = new LinkedHashMap<>();
     private static final byte[] DATA_PING = new byte[]{(byte) 251};
@@ -44,7 +47,7 @@ final class MySlitherWebSocketClient extends WebSocketClient {
         HEADER.put("Pragma", "no-cache");
         HEADER.put("Cache-Control", "no-cache");
     }
-
+ 
     MySlitherWebSocketClient(URI serverUri, MySlitherJFrame view) {
         super(serverUri, new Draft_6455(), HEADER);
         this.view = view;
@@ -107,7 +110,8 @@ final class MySlitherWebSocketClient extends WebSocketClient {
         for (int i = 0; i < b.length; i++) {
             data[i] = b[i] & 0xFF;
         }
-        char cmd = (char) data[2];
+        char cmd = (char) data[2];      // command: action to perform
+        // view.log(Arrays.toString(data) + ", cmd=" + cmd);
         switch (cmd) {
             case '6':
                 processPreInitResponse(data);
@@ -126,7 +130,7 @@ final class MySlitherWebSocketClient extends WebSocketClient {
                 processUpdateFam(data);
                 break;
             case 'r':
-                processRemoveSnakePart(data);
+                processRemoveSnakePart(data); 
                 break;
             case 'g':
             case 'n':
@@ -259,7 +263,6 @@ final class MySlitherWebSocketClient extends WebSocketClient {
             view.log("update body-parts wrong length!");
             return;
         }
-
         int snakeID = (data[3] << 8) | data[4];
         int newDir = -1;
         double newAng = -1;
@@ -367,6 +370,11 @@ final class MySlitherWebSocketClient extends WebSocketClient {
         if (data.length != 5 && data.length != 8) {
             view.log("remove snake part wrong length!");
         }
+
+        // if (model.snake.hasDied) {
+        //     view.log("You have died, time to lose a few limbs");
+        // }
+
         int snakeID = (data[3] << 8) | data[4];
         synchronized (view.modelLock) {
             Snake snake = model.getSnake(snakeID);
@@ -441,10 +449,24 @@ final class MySlitherWebSocketClient extends WebSocketClient {
             view.log("dead wrong length!");
             return;
         }
+        
+        // // int snakeID = (data[3] << 8) | data[4];
+        // // Snake snake = model.getSnake(snakeID);
+        // Snake snake = model.snake;
+        // snake.die();
+        // System.out.println(snake.name + ", died = " + snake.hasDied + ", number of body parts = " + snake.body.size());
+        
+        // if (! snake.canRespawn()) {
+        //     view.log("You cannot be respawned.");
+        // }
         int deathReason = data[3];
         switch (deathReason) {
             case 0:
                 view.log("You died.");
+                // if (snake.canRespawn()) {
+                //     view.log("You can be respawned");
+                //     snake.respawn();
+                // }
                 break;
             case 1:
                 view.log("You've achieved a new record!");
@@ -680,6 +702,10 @@ final class MySlitherWebSocketClient extends WebSocketClient {
         }
     }
 
+    /**
+     * Handles the kills of the snake
+     * @param data
+     */
     private void processKill(int[] data) {
         if (data.length != 8) {
             view.log("kill wrong length!");
@@ -696,6 +722,12 @@ final class MySlitherWebSocketClient extends WebSocketClient {
         }
     }
 
+    /**
+     * 
+     * 
+     * @param snakeNr the snake's index/colour
+     * @param nick the nickname of the snake (set by the user)
+     */
     void sendInitRequest(int snakeNr, String nick) {
 
         initRequest = new byte[4 + nick.length()];
@@ -709,7 +741,7 @@ final class MySlitherWebSocketClient extends WebSocketClient {
 
         // pre-init request
         view.log("sending pre-init request");
-        send(new byte[]{99});
+        send(new byte[]{99});       // Sends the array to the server
     }
 
     static URI[] getServerList() {

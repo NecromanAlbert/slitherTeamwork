@@ -1,7 +1,7 @@
 package de.mat2095.my_slither;
 
 import javax.swing.*;
-
+ 
 
 public final class Main {
 

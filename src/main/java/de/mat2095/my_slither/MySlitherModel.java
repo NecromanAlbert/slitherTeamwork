@@ -4,7 +4,7 @@ import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-
+// The 
 class MySlitherModel {
 
     static final double PI2 = Math.PI * 2;
@@ -191,6 +191,9 @@ class MySlitherModel {
         }
     }
 
+    /**
+     * 
+     */
     void addPrey(int id, double x, double y, double radius, int dir, double wang, double ang, double sp) {
         synchronized (view.modelLock) {
             preys.put(id, new Prey(x, y, radius, dir, wang, ang, sp));
@@ -207,6 +210,13 @@ class MySlitherModel {
         }
     }
 
+    /**
+     * 
+     * @param x
+     * @param y
+     * @param size
+     * @param fastSpawn whether the food to be added is long-lived
+     */
     void addFood(int x, int y, double size, boolean fastSpawn) {
         synchronized (view.modelLock) {
             foods.put(y * gameRadius * 3 + x, new Food(x, y, size, fastSpawn));

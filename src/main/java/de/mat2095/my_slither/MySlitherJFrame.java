@@ -226,13 +226,17 @@ final class MySlitherJFrame extends JFrame {
                     //System.out.println("colour changed to " + colorContainer);
                     if (status == Status.CONNECTED && model != null) {
                         model.update();
-                        client.sendData(player.action(model));
+                        client.sendData(player.action(model)); 
                     }
                 }
             }
         }, 1, 10);
     }
 
+    /**
+     * Updates the view's state, responding to the client
+     * 
+     */
     void onOpen() {
         switch (status) {
             case CONNECTING:
@@ -365,6 +369,11 @@ final class MySlitherJFrame extends JFrame {
         rank.setText(newRank + "/" + playerCount);
     }
 
+    /**
+     * Updates the kills JLabel
+     * 
+     * @param newKills the number of kills the current snake has made
+     */
     void setKills(int newKills) {
         kills.setText(String.valueOf(newKills));
     }

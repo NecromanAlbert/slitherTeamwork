@@ -206,6 +206,7 @@ final class MySlitherCanvas extends JPanel {
                 g.fill(new Ellipse2D.Double(prey.x - preyRadius, prey.y - preyRadius, preyRadius * 2, preyRadius * 2));
             });
 
+            // Draw the snake
             oldStroke = g.getStroke();
             g.setFont(NAME_FONT.deriveFont((float) (18 / Math.pow(scale, 0.75))));
             model.snakes.values().forEach(snake -> {
@@ -247,7 +248,7 @@ final class MySlitherCanvas extends JPanel {
                         lastX = bodyPart.x;
                         lastY = bodyPart.y;
                     }
-
+ 
                     g.draw(snakePath);
                 }
 
