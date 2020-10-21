@@ -37,4 +37,7 @@ class SpecialFood {
     int getId(){
         return id;
     }
+
+
+    
 }

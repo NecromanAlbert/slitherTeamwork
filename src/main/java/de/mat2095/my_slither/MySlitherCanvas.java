@@ -20,7 +20,10 @@ final class MySlitherCanvas extends JPanel {
     private static final Color BACKGROUND_COLOR = new Color(0x2B2B2B);
     private static final Color FOREGROUND_COLOR = new Color(0xA9B7C6);
     private static final Color SECTOR_COLOR = new Color(0x803C3F41, true);
-    private static final Color FOOD_COLOR = new Color(0xCC7832);
+    private static final Color FOOD_COLOR_SMALL = new Color(0xe872f7);
+    private static final Color FOOD_COLOR_MEDIUM = new Color(0x8df542); //different colours for different sized food
+    private static final Color FOOD_COLOR_LARGE = new Color(0xfc6d76);
+    private static final Color SPECIAL_FOOD_COLOR = new Color(0xc7fffe);
     private static final Color PREY_COLOR = new Color(0xFFFF00);
     private static final float[] PREY_HALO_FRACTIONS = new float[]{0.5f, 1f};
     private static final Color[] PREY_HALO_COLORS = new Color[]{new Color(0x60FFFF00, true), new Color(0x00FFFF00, true)};
@@ -189,10 +192,37 @@ final class MySlitherCanvas extends JPanel {
             g.drawOval(-64, -64, model.gameRadius * 2 + 128, model.gameRadius * 2 + 128);
             g.setStroke(oldStroke);
 
-            g.setColor(FOOD_COLOR);
             model.foods.values().forEach(food -> {
+                if (food.getRadius()<5)
+            { 
+                g.setColor(FOOD_COLOR_SMALL);
+            } else if  (food.getRadius()>5 && food.getRadius()<7)
+            {
+                g.setColor(FOOD_COLOR_MEDIUM);
+            }   else if (food.getRadius()>7)
+            {
+                g.setColor(FOOD_COLOR_LARGE);
+            }        
                 double foodRadius = food.getRadius();
                 g.fill(new Ellipse2D.Double(food.x - foodRadius, food.y - foodRadius, foodRadius * 2, foodRadius * 2));
+            });
+
+
+            g.setColor(SPECIAL_FOOD_COLOR); //color of the special food
+            model.specialfoods.values().forEach(specialfood ->{
+                double specialfoodRadius = specialfood.getRadius(); //get size of food
+                g.fill(new Ellipse2D.Double(specialfood.x - specialfoodRadius, specialfood.y - specialfoodRadius, specialfoodRadius *2, specialfoodRadius *2));
+            });
+
+            model.preys.values().forEach(prey -> {
+                double preyRadius = prey.getRadius();
+                if (preyRadius <= 0) {
+                    return;
+                }
+                g.setPaint(new RadialGradientPaint((float) (prey.x - 0.5 / scale), (float) (prey.y - 0.5 / scale), (float) (preyRadius * 2), PREY_HALO_FRACTIONS, PREY_HALO_COLORS));
+                g.fillRect((int) Math.floor(prey.x - preyRadius * 2 - 1), (int) Math.floor(prey.y - preyRadius * 2 - 1), (int) (preyRadius * 4 + 3), (int) (preyRadius * 4 + 3));
+                g.setColor(PREY_COLOR);
+                g.fill(new Ellipse2D.Double(prey.x - preyRadius, prey.y - preyRadius, preyRadius * 2, preyRadius * 2));
             });
 
             model.preys.values().forEach(prey -> {
@@ -312,6 +342,5 @@ final class MySlitherCanvas extends JPanel {
         }
         g.drawString("FPS: " + Math.round(fps), 0, g.getFontMetrics().getAscent());
         lastFrameTime = newFrameTime;
-    
     }
 }

@@ -106,12 +106,13 @@ final class MySlitherWebSocketClient extends WebSocketClient {
             view.log("too short");
             return;
         }
-        int[] data = new int[b.length];
+        int[] data = new int[b.length]; //the byte array is converted to an int array
         for (int i = 0; i < b.length; i++) {
-            data[i] = b[i] & 0xFF;
+            data[i] = b[i] & 0xFF; //0xFF converts the byte to the integer without changing the value
         }
         char cmd = (char) data[2];      // command: action to perform
         // view.log(Arrays.toString(data) + ", cmd=" + cmd);
+        char sn2 = (char) data[2]; //initialisation of a second char that will allow for a second switch/case
         switch (cmd) {
             case '6':
                 processPreInitResponse(data);
@@ -181,6 +182,20 @@ final class MySlitherWebSocketClient extends WebSocketClient {
                 break;
             default:
                 view.log("Unknown command: " + cmd);
+        }
+
+        switch (sn2) {
+
+            case 'F':
+            case 'f':
+            processAddSpecialFood(data, sn2 == 'F', sn2 != 'f');
+            break;
+            case 'c':
+                processRemoveSpecialFood(data);
+                break;
+
+            default:
+                
         }
     }
 
@@ -616,6 +631,19 @@ final class MySlitherWebSocketClient extends WebSocketClient {
         }
     }
 
+        //this will add the specila food to the game
+        private void processAddSpecialFood(int[]data, boolean allowMultipleEntities, boolean slowSpawn){ 
+            if ((!allowMultipleEntities && data.length != 9) || (allowMultipleEntities && (data.length < 9 || ((data.length - 9) % 6 != 0)))) {
+                view.log("add food wrong length!");
+                return;
+            }
+            for (int i = 8; i < data.length; i += 6) {
+                int x = (data[i - 3] << 8) | data[i - 2]; //reduces the frequency at which the food spawns so less special food  would spawn than normal food
+                int z = (data[i - 1] << 8) | data[i - 0];
+                model.addSpecialFood(x, z, 30, slowSpawn,"Invincible", i); //calls upon the addspecialfood method
+            }
+        }
+
     private void processRemoveFood(int[] data) {
         if (data.length != 7 && data.length != 9) {
             view.log("remove food wrong length!");
@@ -627,6 +655,19 @@ final class MySlitherWebSocketClient extends WebSocketClient {
 
         model.removeFood(x, y);
     }
+
+        //this is used to despawn special food after a certain amount of time
+        private void processRemoveSpecialFood(int[] data) {
+            if (data.length != 7 && data.length != 9) {
+                view.log("remove food wrong length!");
+                return;
+            }
+    
+            int x = (data[3] << 8) | data[4];
+            int y = (data[5] << 8) | data[6];
+    
+            model.removeSpecialFood(x, y);
+        }
 
     private void processUpdatePrey(int[] data) {
 
@@ -783,8 +824,8 @@ final class MySlitherWebSocketClient extends WebSocketClient {
             } catch (URISyntaxException ex) {
                 throw new Error("Error building server-address!");
             }
-            
         }
+
         return serverList;
     }
 }

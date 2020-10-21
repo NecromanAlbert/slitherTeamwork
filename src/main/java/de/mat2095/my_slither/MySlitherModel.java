@@ -21,6 +21,7 @@ class MySlitherModel {
     final Map<Integer, Snake> snakes = new LinkedHashMap<>();
     final Map<Integer, Prey> preys = new LinkedHashMap<>();
     final Map<Integer, Food> foods = new LinkedHashMap<>();
+    final Map<Integer, SpecialFood> specialfoods = new LinkedHashMap<>();
     final boolean[][] sectors;
 
     private long lastUpdateTime;
@@ -190,6 +191,7 @@ class MySlitherModel {
             snakes.remove(snakeID);
         }
     }
+
     /**
      * 
      */
@@ -227,6 +229,19 @@ class MySlitherModel {
             foods.remove(y * gameRadius * 3 + x);
         }
     }
+
+    void addSpecialFood(int x, int y, double size, boolean slowSpawn, String name, int id){ //add special food to game
+        synchronized(view.modelLock) {
+            specialfoods.put(y*gameRadius * 2 + x, new SpecialFood(x, y, size, slowSpawn, "Invincible", id));
+
+        }
+    }
+
+    void removeSpecialFood(int x, int y){  //remove special food from game
+        synchronized(view.modelLock) {
+            specialfoods.remove(y * 2 + x);
+        }
+    } 
 
     void addSector(int x, int y) {
         synchronized (view.modelLock) {
