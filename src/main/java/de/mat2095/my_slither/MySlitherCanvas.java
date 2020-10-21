@@ -312,5 +312,6 @@ final class MySlitherCanvas extends JPanel {
         }
         g.drawString("FPS: " + Math.round(fps), 0, g.getFontMetrics().getAscent());
         lastFrameTime = newFrameTime;
+    
     }
 }

@@ -190,7 +190,6 @@ class MySlitherModel {
             snakes.remove(snakeID);
         }
     }
-
     /**
      * 
      */

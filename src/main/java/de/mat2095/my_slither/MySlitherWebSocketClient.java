@@ -783,8 +783,8 @@ final class MySlitherWebSocketClient extends WebSocketClient {
             } catch (URISyntaxException ex) {
                 throw new Error("Error building server-address!");
             }
+            
         }
-
         return serverList;
     }
 }
