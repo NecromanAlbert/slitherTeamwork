@@ -1,6 +1,7 @@
 package de.mat2095.my_slither;
 
 import java.util.Deque;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 
@@ -91,9 +92,11 @@ class Snake {
             return;
         }
         int nbToRemove = body.size()/10;
-        for (int i = 0; i < nbToRemove; i++) {
-            body.pollLast();
-        }
+        // for (int i = 0; i < nbToRemove; i++) {
+        //     body.pollLast();
+        // }
+        IntStream.range(0, nbToRemove).forEach(
+            i->body.pollLast());
         // The game starts again
         hasDied = false;
     }
